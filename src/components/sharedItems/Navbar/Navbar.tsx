@@ -1,11 +1,16 @@
-import { NavLink } from "react-router";
+import { NavLink, useNavigate } from "react-router";
 import { useState } from "react";
 import { Menu, X, MessageCircle, Users } from "lucide-react";
+import UseAuth from "../../../hooks/UseAuth/UseAuth";
 
 const Navbar = () => {
     const [isOpen, setIsOpen] = useState(false);
+    const {user} = UseAuth();
+    const navigate = useNavigate();
 
     const toggleMenu = () => setIsOpen(!isOpen);
+
+    const fallbackUrl = 'https://img.freepik.com/free-vector/smiling-young-man-illustration_1308-174669.jpg?semt=ais_hybrid&w=740&q=80';
 
     const navLinks = [
         { to: "/", label: "Home" },
@@ -49,12 +54,26 @@ const Navbar = () => {
                                 {link.label}
                             </NavLink>
                         ))}
+
+{
+    user ? (
+        <div onClick={() => {
+  const firstName = user?.displayName?.split(" ")[0]; 
+  navigate(`/${firstName}/${user.uid}`);
+}} className="cursor-pointer">
+            <img className="w-10 h-10 rounded-full" src={user?.photoURL || fallbackUrl} alt={user?.displayName || "User"} />
+        </div>
+    ) : (
                         <NavLink
-                            to="/get-started"
+                            to="/auth/login"
                             className="ml-4 px-6 py-2 bg-white text-purple-600 rounded-lg font-semibold hover:bg-gray-100 transform hover:scale-105 transition-all duration-300 shadow-lg"
                         >
                             Get Started
                         </NavLink>
+    )
+}
+
+
                     </div>
 
                     {/* Mobile Menu Button */}
@@ -95,7 +114,7 @@ const Navbar = () => {
                         </NavLink>
                     ))}
                     <NavLink
-                        to="/get-started"
+                        to="/auth/login"
                         onClick={() => setIsOpen(false)}
                         className="block px-4 py-3 bg-white text-purple-600 rounded-lg font-semibold text-center hover:bg-gray-100 transition-all duration-300 shadow-lg mt-2"
                     >
