@@ -3,6 +3,8 @@ import { useState } from 'react';
 import type { FormEvent } from 'react';
 import UseAuth from '../../hooks/UseAuth/UseAuth';
 import { Link, useNavigate } from 'react-router';
+import axiosInstance from '../../hooks/AxiosInstance/AxiosInstance';
+
 
 const Login = () => {
     const [email, setEmail] = useState('');
@@ -13,29 +15,70 @@ const Login = () => {
     const { loginUser, googleLogin } = UseAuth();
     const navigate = useNavigate();
 
+    const updateLastLogin = async (uid: string) => {
+        try {
+            await axiosInstance.put(`/users/${uid}`, {
+                lastLogin: new Date().toISOString()
+            });
+        } catch (err) {
+            console.error("Failed to update lastLogin:", err);
+        }
+    };
+
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
         setError('');
         setLoading(true);
         
         try {
-            await loginUser(email, password);
-            navigate('/');  // Redirect to home page after successful login
-        } catch  {
+            const user = await loginUser(email, password);
+            const userUid = user?.user?.uid;
+            await updateLastLogin(userUid);
+            navigate('/');
+        } catch {
             setError('Failed to login. Please check your credentials.');
         } finally {
             setLoading(false);
         }
     };
 
-    const handleGoogleLogin = async () => {
+const handleGoogleLogin = async () => {
+    setError('');
+    setLoading(true);
+    try {
+        const user = await googleLogin(); 
+        const userUid = user?.user?.uid;
+        const userData = {
+            uid: userUid,
+            name: user.user.displayName || "No Name",
+            email: user.user.email,
+            age: null,
+            lastLogin: new Date().toISOString(),
+        };
+
+        // Check if user exists
         try {
-            await googleLogin();
-            navigate('/');
-        } catch  {
-            setError('Failed to login with Google.');
+            await axiosInstance.get(`/users/${userUid}`);
+            // User exists → just update lastLogin
+            await axiosInstance.put(`/users/${userUid}`, { lastLogin: userData.lastLogin });
+        } catch (err: any) {
+            if (err.response?.status === 404) {
+                // User not found → create new
+                await axiosInstance.post(`/users`, userData);
+            } else {
+                throw err;
+            }
         }
-    };
+
+        navigate('/');
+    } catch (err: any) {
+        console.error("Google login error:", err);
+        setError('Failed to login with Google.');
+    } finally {
+        setLoading(false);
+    }
+};
+
 
     return (
         <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">

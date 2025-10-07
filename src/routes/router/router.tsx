@@ -16,7 +16,7 @@ export const route = createBrowserRouter([
                 element: <Home></Home>
             },
             {
-                path: "/:firstName/:userId",
+                path: "/:firstName/:uid",
                 element: <Profile></Profile>
             }
         ]
