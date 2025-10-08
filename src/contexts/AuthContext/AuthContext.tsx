@@ -8,6 +8,7 @@ export interface AuthContextType {
   createUser: (email: string, password: string) => Promise<any>;
   loginUser: (email: string, password: string) => Promise<any>;
   logOut: () => Promise<void>;
+  ForgetPassword: (email: string) => Promise<void>;
 }
 
 export const AuthContext = createContext<AuthContextType | null>(null);

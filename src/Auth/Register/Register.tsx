@@ -41,31 +41,33 @@ const Register = () => {
     setLoading(true);
 
     try {
-
-      console.log("Creating Firebase user...");
-      const userCredential = await createUser(email, password);
+      console.log("🔥 Starting registration process...");
       
+      // 1. Firebase-এ ইউজার তৈরি করুন
+      console.log("1. Creating Firebase user...");
+      const userCredential = await createUser(email, password);
+      console.log("✅ Firebase user created:", userCredential.user);
 
       const userUid = userCredential.user.uid;
 
-
-
+      // 2. MongoDB-এর জন্য ডাটা প্রস্তুত করুন - SIMPLIFIED VERSION
       const userData = {
         uid: userUid,
         name: name.trim(),
         email: email.trim(),
-        age: age ? parseInt(age) : null,
-        createdAt: new Date().toISOString(),
+        age: age ? parseInt(age) : null
+        // ❌ privacySettings সরিয়ে দিন - ব্যাকএন্ড নিজেই handle করবে
       };
 
-      console.log("Sending POST request to /users with data:", userData);
-      
+      console.log("2. Prepared user data for MongoDB:", userData);
 
-       await axiosInstance.post("/users", userData, { 
-        timeout: 10000 
+      // 3. MongoDB-এ ইউজার তৈরি করুন
+      console.log("3. Sending POST request to /users...");
+      const response = await axiosInstance.post("/users", userData, { 
+        timeout: 15000
       });
       
-
+      console.log("✅ MongoDB response:", response.data);
 
       setSuccess("Registration successful! Redirecting to login...");
 
@@ -80,25 +82,27 @@ const Register = () => {
       setTimeout(() => navigate("/auth/login"), 1500);
 
     } catch (error: any) {
-      console.error("Registration error details:", error);
+      console.error("❌ Registration failed:", error);
       
-      // Firebase error messages
+      // Detailed error handling
       if (error.code === 'auth/email-already-in-use') {
         setError("This email is already registered. Please use a different email.");
       } else if (error.code === 'auth/invalid-email') {
         setError("Invalid email address.");
       } else if (error.code === 'auth/weak-password') {
         setError("Password is too weak.");
-      } else if (error.code === 'ECONNABORTED') { // Axios timeout error
-        setError("Request timed out. Please try again.");
-      } else if (error.response?.data?.message) {
+      } else if (error.response?.data) {
         // API error message
-        setError(error.response.data.message);
+        console.error("📡 Server error response:", error.response.data);
+        setError(error.response.data.message || "Registration failed. Please try again.");
+      } else if (error.request) {
+        console.error("🌐 Network error - No response received");
+        setError("Network error. Please check if server is running.");
       } else {
         setError(error.message || "Registration failed. Please try again.");
       }
     } finally {
-      console.log("Finally block executed - stopping loading");
+      console.log("🏁 Registration process completed");
       setLoading(false);
     }
   };
