@@ -1,5 +1,6 @@
 // src/hooks/axiosInstance.ts
-import axios, { AxiosInstance } from "axios";
+import axios from "axios";
+import type { AxiosInstance } from "axios";
 
 // Base URL jeikhane API ase
 const BASE_URL = "http://localhost:3000/bb/v1";

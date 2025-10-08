@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { AuthContext, AuthContextType } from "../AuthContext/AuthContext";
+import { AuthContext } from "../AuthContext/AuthContext";
+import type { AuthContextType } from "../AuthContext/AuthContext";
 import type { User } from "firebase/auth";
 import {
   createUserWithEmailAndPassword,

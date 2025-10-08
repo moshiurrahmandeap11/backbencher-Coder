@@ -50,8 +50,8 @@ const handleGoogleLogin = async () => {
         const userUid = user?.user?.uid;
         const userData = {
             uid: userUid,
-            name: user.user.displayName || "No Name",
-            email: user.user.email,
+            name: user?.user?.displayName || "No Name",
+            email: user?.user?.email,
             age: null,
             lastLogin: new Date().toISOString(),
         };
