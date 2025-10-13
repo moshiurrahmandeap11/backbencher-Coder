@@ -3,6 +3,7 @@ import MainContent from './MainContent/MainContent';
 import UserManagement from './UserManagement/UserManagement';
 import Header from './Header/Header';
 import Sidebar from './Sidebar/Sidebar';
+import Subscribers from './Subscribers/Subscribers';
 
 
 const BackbencherControl = () => {
@@ -15,8 +16,8 @@ const BackbencherControl = () => {
                 return <MainContent />;
             case 'users':
                 return <UserManagement />;
-            case 'analytics':
-                return <div className="bg-white rounded-lg shadow-lg p-6">Analytics Component</div>;
+            case 'subscribers':
+                return <Subscribers></Subscribers>;
             case 'settings':
                 return <div className="bg-white rounded-lg shadow-lg p-6">Settings Component</div>;
             case 'reports':

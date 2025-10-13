@@ -1,8 +1,15 @@
 import { NavLink } from "react-router";
 import { Facebook, Twitter, Instagram, Linkedin, Github, Mail, Phone, MapPin, Heart } from "lucide-react";
+import MainButton from "../MainButton/MainButton";
+import { useState } from "react";
+import toast from "react-hot-toast";
+import axiosInstance from "../../../hooks/AxiosInstance/AxiosInstance";
+
 
 const Footer = () => {
     const currentYear = new Date().getFullYear();
+    const [email, setEmail] = useState("");
+    const [loading, setLoading] = useState(false);
 
     const quickLinks = [
         { to: "/", label: "Home" },
@@ -31,6 +38,54 @@ const Footer = () => {
         { href: "https://linkedin.com", icon: <Linkedin className="w-5 h-5" />, label: "LinkedIn" },
         { href: "https://github.com", icon: <Github className="w-5 h-5" />, label: "GitHub" },
     ];
+
+    const handleSubscribe = async () => {
+        // Email validation
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        
+        if (!email) {
+            toast.error("Please enter your email address");
+            return;
+        }
+
+        if (!emailRegex.test(email)) {
+            toast.error("Please enter a valid email address");
+            return;
+        }
+
+        setLoading(true);
+
+        try {
+            const response = await axiosInstance.post('/subscribers', {
+                email: email
+            });
+
+            if (response.data.success) {
+                toast.success(" Successfully subscribed to our newsletter!");
+                setEmail(""); // Clear input
+            } else {
+                toast.error(response.data.message || "Subscription failed");
+            }
+        } catch (error: any) {
+            console.error("Subscription error:", error);
+            
+            if (error.response?.status === 409) {
+                toast.error("📧 This email is already subscribed!");
+            } else if (error.response?.data?.message) {
+                toast.error(error.response.data.message);
+            } else {
+                toast.error("❌ Failed to subscribe. Please try again.");
+            }
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleKeyPress = (e: React.KeyboardEvent) => {
+        if (e.key === 'Enter') {
+            handleSubscribe();
+        }
+    };
 
     return (
         <footer className="bg-gradient-to-br from-gray-900 via-purple-900 to-indigo-900 text-white">
@@ -127,16 +182,28 @@ const Footer = () => {
                     <div className="max-w-md mx-auto text-center">
                         <h4 className="text-lg font-semibold mb-2">Subscribe to Our Newsletter</h4>
                         <p className="text-gray-300 text-sm mb-4">Get the latest updates and news delivered to your inbox</p>
-                        <div className="flex gap-2">
+                        <div className="flex flex-col sm:flex-row gap-2">
                             <input
                                 type="email"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                onKeyPress={handleKeyPress}
                                 placeholder="Enter your email"
-                                className="flex-1 px-4 py-2 rounded-lg bg-white/10 border border-white/20 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500"
+                                className="flex-1 px-4 py-2 rounded-lg bg-white/10 border border-white/20 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all duration-300"
+                                disabled={loading}
                             />
-                            <button className="px-6 py-2 bg-gradient-to-r from-indigo-500 to-pink-500 rounded-lg font-semibold hover:shadow-lg transform hover:scale-105 transition-all duration-300">
-                                Subscribe
-                            </button>
+                            <MainButton 
+                                onClick={handleSubscribe}
+                                loading={loading}
+                                disabled={loading}
+                                className="cursor-pointer px-6 py-2 bg-gradient-to-r from-indigo-500 to-pink-500 rounded-lg font-semibold hover:shadow-lg transform hover:scale-105 transition-all duration-300 min-w-[120px]"
+                            >
+                                {loading ? "Subscribing..." : "Subscribe"}
+                            </MainButton>
                         </div>
+                        <p className="text-gray-400 text-xs mt-2">
+                            No spam ever. Unsubscribe anytime.
+                        </p>
                     </div>
                 </div>
             </div>

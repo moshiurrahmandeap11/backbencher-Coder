@@ -9,7 +9,7 @@ const Sidebar: React.FC<SidebarProps> = ({ activeMenu, setActiveMenu }) => {
     const menuItems = [
         { id: 'dashboard', label: 'Dashboard', icon: '📊' },
         { id: 'users', label: 'User Management', icon: '👥' },
-        { id: 'analytics', label: 'Analytics', icon: '📈' },
+        { id: 'subscribers', label: 'Subscribers', icon: '📈' },
         { id: 'settings', label: 'Settings', icon: '⚙️' },
         { id: 'reports', label: 'Reports', icon: '📋' },
     ];

@@ -9,6 +9,8 @@ import ForgetPassword from "../../Auth/ForgetPassword/ForgetPassword";
 import EditProfile from "../../pages/Profile/EditProfile/EditProfile";
 import DashboardLayout from "../../layouts/DashboardLayout/DashboardLayout";
 import BackbencherControl from "../../components/DashboardComponent/BackbencherControl/BackbencherControl";
+import About from "../../pages/About/About";
+import Contact from "../../pages/Contact/Contact";
 
 export const route = createBrowserRouter([
     {
@@ -26,6 +28,14 @@ export const route = createBrowserRouter([
             {
                 path: "/edit-profile/:firstName/:uid",
                 element: <EditProfile></EditProfile>
+            },
+            {
+                path: "/about",
+                element: <About></About>
+            },
+            {
+                path: "/contact",
+                element: <Contact></Contact>
             }
         ]
     },
