@@ -1,9 +1,16 @@
-import { Outlet } from 'react-router';
+import { Outlet, useNavigate } from 'react-router';
+import MainButton from '../../components/sharedItems/MainButton/MainButton';
+import { MoveLeft } from 'lucide-react';
 
 const AuthLayout = () => {
+    const navigate = useNavigate();
     return (
         <div>
             <main>
+                <MainButton onClick={() => navigate("/")} variant='outline' className='cursor-pointer m-5 flex items-center justify-center gap-2'>
+                    <MoveLeft></MoveLeft>
+                    <span>Back To Home</span>
+                </MainButton>
                 <Outlet></Outlet>
             </main>
         </div>

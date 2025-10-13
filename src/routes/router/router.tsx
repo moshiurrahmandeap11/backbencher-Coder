@@ -6,6 +6,9 @@ import Login from "../../Auth/Login/Login";
 import Register from "../../Auth/Register/Register";
 import Profile from "../../pages/Profile/Profile";
 import ForgetPassword from "../../Auth/ForgetPassword/ForgetPassword";
+import EditProfile from "../../pages/Profile/EditProfile/EditProfile";
+import DashboardLayout from "../../layouts/DashboardLayout/DashboardLayout";
+import BackbencherControl from "../../components/DashboardComponent/BackbencherControl/BackbencherControl";
 
 export const route = createBrowserRouter([
     {
@@ -19,6 +22,10 @@ export const route = createBrowserRouter([
             {
                 path: "/:firstName/:uid",
                 element: <Profile></Profile>
+            },
+            {
+                path: "/edit-profile/:firstName/:uid",
+                element: <EditProfile></EditProfile>
             }
         ]
     },
@@ -37,6 +44,16 @@ export const route = createBrowserRouter([
             {
                 path: "forgot-password",
                 element: <ForgetPassword></ForgetPassword>
+            }
+        ]
+    },
+    {
+        path: "/dashboard",
+        element: <DashboardLayout></DashboardLayout>,
+        children: [
+            {
+                path: "bb",
+                element: <BackbencherControl></BackbencherControl>
             }
         ]
     }

@@ -65,6 +65,7 @@ useEffect(() => {
   const userInfo: AuthContextType = {
     user,
     loading,
+    setLoading,
     googleLogin,
     createUser,
     loginUser,
