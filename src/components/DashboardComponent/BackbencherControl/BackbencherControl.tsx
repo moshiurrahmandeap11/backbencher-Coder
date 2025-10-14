@@ -4,6 +4,7 @@ import UserManagement from './UserManagement/UserManagement';
 import Header from './Header/Header';
 import Sidebar from './Sidebar/Sidebar';
 import Subscribers from './Subscribers/Subscribers';
+import Settings from './Settings/Settings';
 
 
 const BackbencherControl = () => {
@@ -19,7 +20,7 @@ const BackbencherControl = () => {
             case 'subscribers':
                 return <Subscribers></Subscribers>;
             case 'settings':
-                return <div className="bg-white rounded-lg shadow-lg p-6">Settings Component</div>;
+                return <Settings></Settings>;
             case 'reports':
                 return <div className="bg-white rounded-lg shadow-lg p-6">Reports Component</div>;
             default:

@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { motion, useInView, useAnimation } from 'framer-motion';
+import { Helmet } from 'react-helmet-async';
 
 const About = () => {
     const ref = useRef(null);
@@ -95,6 +96,197 @@ const About = () => {
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-50 overflow-hidden">
+            {/* SEO Meta Tags */}
+            <Helmet>
+                {/* Basic Meta Tags */}
+                <title>About Backbencher Coder - Our Mission, Vision & Developer Community</title>
+                <meta 
+                    name="description" 
+                    content="Learn about Backbencher Coder's mission to democratize coding education. Discover our vision, team, and commitment to empowering developers worldwide." 
+                />
+                <meta 
+                    name="keywords" 
+                    content="about backbencher coder, coding education mission, developer community, programming learning platform, coding resources, tech education, developer tools, programming community" 
+                />
+                
+                {/* Open Graph Meta Tags */}
+                <meta property="og:title" content="About Backbencher Coder - Our Mission to Democratize Coding Education" />
+                <meta 
+                    property="og:description" 
+                    content="Discover how Backbencher Coder empowers developers worldwide with cutting-edge tools, resources, and a vibrant community to foster innovation and growth." 
+                />
+                <meta property="og:url" content="https://backbenchercoder.com/about" />
+                <meta property="og:type" content="website" />
+                <meta property="og:site_name" content="Backbencher Coder" />
+                <meta property="og:image" content="https://backbenchercoder.com/images/og-about.jpg" />
+                <meta property="og:image:width" content="1200" />
+                <meta property="og:image:height" content="630" />
+                <meta property="og:image:alt" content="About Backbencher Coder - Empowering Developers Worldwide" />
+                
+                {/* Twitter Meta Tags */}
+                <meta name="twitter:card" content="summary_large_image" />
+                <meta name="twitter:title" content="About Backbencher Coder - Mission & Vision" />
+                <meta 
+                    name="twitter:description" 
+                    content="Learn about our journey, team, and commitment to making coding education accessible to everyone worldwide." 
+                />
+                <meta name="twitter:url" content="https://backbenchercoder.com/about" />
+                <meta name="twitter:image" content="https://backbenchercoder.com/images/twitter-about.jpg" />
+                <meta name="twitter:site" content="@backbenchercoder" />
+                <meta name="twitter:creator" content="@backbenchercoder" />
+                
+                {/* Additional SEO Meta Tags */}
+                <meta name="author" content="Backbencher Coder" />
+                <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+                <meta name="language" content="English" />
+                <meta name="revisit-after" content="7 days" />
+                <meta name="rating" content="general" />
+                <meta name="distribution" content="global" />
+                
+                {/* Canonical URL */}
+                <link rel="canonical" href="https://backbenchercoder.com/about" />
+                
+                {/* Alternate Languages */}
+                <link rel="alternate" href="https://backbenchercoder.com/about" hrefLang="x-default" />
+                <link rel="alternate" href="https://backbenchercoder.com/about" hrefLang="en" />
+                
+                {/* Preload critical resources */}
+                <link rel="preload" as="image" href="./src/assets/about-hero.jpg" />
+                
+                {/* Structured Data / JSON-LD for About Page */}
+                <script type="application/ld+json">
+                    {JSON.stringify({
+                        "@context": "https://schema.org",
+                        "@type": "AboutPage",
+                        "name": "About Backbencher Coder",
+                        "description": "Learn about Backbencher Coder's mission, vision, and commitment to democratizing coding education",
+                        "url": "https://backbenchercoder.com/about",
+                        "mainEntity": {
+                            "@type": "Organization",
+                            "name": "Backbencher Coder",
+                            "description": "Programming education platform empowering developers worldwide",
+                            "url": "https://backbenchercoder.com",
+                            "foundingDate": "2023",
+                            "founder": {
+                                "@type": "Person",
+                                "name": "Backbencher Coder"
+                            },
+                            "mission": "To democratize coding education and provide accessible, high-quality resources that empower individuals from all backgrounds to become proficient developers and innovators in the digital age.",
+                            "vision": "A world where anyone with passion and dedication can learn to code, build amazing projects, and contribute to the global technology ecosystem regardless of their starting point.",
+                            "address": {
+                                "@type": "PostalAddress",
+                                "addressCountry": "Global"
+                            },
+                            "email": "info@backbenchercoder.com",
+                            "numberOfEmployees": "10+",
+                            "slogan": "Empowering developers worldwide",
+                            "knowsAbout": [
+                                "Programming Education",
+                                "Web Development",
+                                "JavaScript",
+                                "React",
+                                "Python",
+                                "Node.js",
+                                "Coding Tutorials",
+                                "Developer Community"
+                            ],
+                            "sameAs": [
+                                "https://github.com/backbenchercoder",
+                                "https://twitter.com/backbenchercoder",
+                                "https://linkedin.com/company/backbenchercoder"
+                            ]
+                        },
+                        "publisher": {
+                            "@type": "Organization",
+                            "name": "Backbencher Coder",
+                            "logo": {
+                                "@type": "ImageObject",
+                                "url": "https://backbenchercoder.com/images/logo.png"
+                            }
+                        }
+                    })}
+                </script>
+
+                {/* Additional Schema for Organization */}
+                <script type="application/ld+json">
+                    {JSON.stringify({
+                        "@context": "https://schema.org",
+                        "@type": "Organization",
+                        "name": "Backbencher Coder",
+                        "alternateName": "Backbencher Coder Platform",
+                        "url": "https://backbenchercoder.com",
+                        "logo": "https://backbenchercoder.com/images/logo.png",
+                        "description": "Learn coding, build projects, and join a community of developers worldwide",
+                        "address": {
+                            "@type": "PostalAddress",
+                            "addressCountry": "Global"
+                        },
+                        "contactPoint": {
+                            "@type": "ContactPoint",
+                            "contactType": "customer service",
+                            "email": "info@backbenchercoder.com",
+                            "availableLanguage": "English"
+                        },
+                        "sameAs": [
+                            "https://twitter.com/backbenchercoder",
+                            "https://github.com/backbenchercoder",
+                            "https://linkedin.com/company/backbenchercoder",
+                            "https://youtube.com/backbenchercoder"
+                        ],
+                        "knowsAbout": [
+                            "Computer Programming",
+                            "Web Development",
+                            "Software Engineering",
+                            "JavaScript Programming",
+                            "React Development",
+                            "Python Programming",
+                            "Node.js Development",
+                            "Coding Education",
+                            "Programming Tutorials",
+                            "Developer Tools"
+                        ],
+                        "founder": {
+                            "@type": "Person",
+                            "name": "Backbencher Coder Team"
+                        },
+                        "foundingDate": "2023",
+                        "numberOfEmployees": "10+",
+                        "slogan": "Empowering developers worldwide with cutting-edge tools and resources"
+                    })}
+                </script>
+
+                {/* Additional Schema for Educational Organization */}
+                <script type="application/ld+json">
+                    {JSON.stringify({
+                        "@context": "https://schema.org",
+                        "@type": "EducationalOrganization",
+                        "name": "Backbencher Coder",
+                        "description": "Programming education platform providing coding tutorials, resources, and community support for developers",
+                        "url": "https://backbenchercoder.com",
+                        "logo": "https://backbenchercoder.com/images/logo.png",
+                        "sameAs": [
+                            "https://twitter.com/backbenchercoder",
+                            "https://github.com/backbenchercoder"
+                        ],
+                        "contactPoint": {
+                            "@type": "ContactPoint",
+                            "email": "info@backbenchercoder.com",
+                            "contactType": "educational support"
+                        },
+                        "knowsAbout": [
+                            "Programming",
+                            "Web Development",
+                            "Software Engineering",
+                            "Coding Education"
+                        ],
+                        "memberOf": {
+                            "@type": "Organization",
+                            "name": "Developer Education Alliance"
+                        }
+                    })}
+                </script>
+            </Helmet>
+
             {/* Hero Section */}
             <motion.section 
                 initial={{ opacity: 0, y: 50 }}
@@ -128,7 +320,7 @@ const About = () => {
                 </motion.div>
             </motion.section>
 
-            {/* Mission & Vision */}
+            {/* Rest of your existing About page content remains exactly the same */}
             <motion.section 
                 ref={ref}
                 initial="hidden"

@@ -1,5 +1,4 @@
-// Register.tsx
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import type { FormEvent } from "react";
 import UseAuth from "../../hooks/UseAuth/UseAuth";
 import { Link, useNavigate } from "react-router";
@@ -14,13 +13,38 @@ const Register = () => {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [loading, setLoading] = useState(false);
+  const [allowRegistration, setAllowRegistration] = useState(true);
   const { createUser } = UseAuth();
   const navigate = useNavigate();
+
+  // ✅ Check site settings on component mount
+  useEffect(() => {
+    checkRegistrationStatus();
+  }, []);
+
+  const checkRegistrationStatus = async () => {
+    try {
+      const response = await axiosInstance.get('/site-settings/status');
+      if (response.data.success) {
+        setAllowRegistration(response.data.data?.allow_registrations ?? true);
+      }
+    } catch (error) {
+      console.error('Error checking registration status:', error);
+      // Default to true if API fails
+      setAllowRegistration(true);
+    }
+  };
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setError("");
     setSuccess("");
+
+    // ✅ Check if registration is allowed
+    if (!allowRegistration) {
+      setError("New user registrations are currently disabled. Please try again later.");
+      return;
+    }
 
     // Validation
     if (password !== confirmPassword) {
@@ -50,13 +74,12 @@ const Register = () => {
 
       const userUid = userCredential.user.uid;
 
-      // 2. MongoDB-এর জন্য ডাটা প্রস্তুত করুন - SIMPLIFIED VERSION
+      // 2. MongoDB-এর জন্য ডাটা প্রস্তুত করুন
       const userData = {
         uid: userUid,
         name: name.trim(),
         email: email.trim(),
         age: age ? parseInt(age) : null
-        // ❌ privacySettings সরিয়ে দিন - ব্যাকএন্ড নিজেই handle করবে
       };
 
       console.log("2. Prepared user data for MongoDB:", userData);
@@ -92,7 +115,6 @@ const Register = () => {
       } else if (error.code === 'auth/weak-password') {
         setError("Password is too weak.");
       } else if (error.response?.data) {
-        // API error message
         console.error("📡 Server error response:", error.response.data);
         setError(error.response.data.message || "Registration failed. Please try again.");
       } else if (error.request) {
@@ -106,6 +128,36 @@ const Register = () => {
       setLoading(false);
     }
   };
+
+  // ✅ Show disabled message if registration is not allowed
+  if (!allowRegistration) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-md w-full space-y-8 bg-white p-8 rounded-xl shadow-lg text-center">
+          <div className="w-20 h-20 bg-yellow-100 rounded-full flex items-center justify-center mx-auto mb-4">
+            <svg className="w-10 h-10 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z" />
+            </svg>
+          </div>
+          
+          <h2 className="text-2xl font-bold text-gray-900">Registrations Disabled</h2>
+          
+          <p className="text-gray-600">
+            New user registrations are currently disabled. Please check back later or contact the administrator.
+          </p>
+
+          <div className="pt-4">
+            <Link
+              to="/auth/login"
+              className="inline-flex items-center px-4 py-2 bg-indigo-600 text-white rounded-md hover:bg-indigo-700 transition-colors"
+            >
+              Back to Login
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">

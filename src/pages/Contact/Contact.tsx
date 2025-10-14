@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Helmet } from 'react-helmet-async';
 
 type FormState = {
     name: string;
@@ -61,6 +62,181 @@ const Contact: React.FC = () => {
 
     return (
         <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white py-12">
+            {/* SEO Meta Tags */}
+            <Helmet>
+                {/* Basic Meta Tags */}
+                <title>Contact Backbencher Coder - Get Support & Collaborate</title>
+                <meta 
+                    name="description" 
+                    content="Get in touch with Backbencher Coder team. Contact us for technical support, collaboration opportunities, course inquiries, and developer community partnerships." 
+                />
+                <meta 
+                    name="keywords" 
+                    content="contact backbencher coder, programming support, coding help, technical support, collaboration, course inquiry, developer community, contact form, get in touch" 
+                />
+                
+                {/* Open Graph Meta Tags */}
+                <meta property="og:title" content="Contact Backbencher Coder - Get Support & Collaborate" />
+                <meta 
+                    property="og:description" 
+                    content="Reach out to our team for technical support, course inquiries, collaboration opportunities, or to join our vibrant developer community." 
+                />
+                <meta property="og:url" content="https://backbenchercoder.com/contact" />
+                <meta property="og:type" content="website" />
+                <meta property="og:site_name" content="Backbencher Coder" />
+                <meta property="og:image" content="https://backbenchercoder.com/images/og-contact.jpg" />
+                <meta property="og:image:width" content="1200" />
+                <meta property="og:image:height" content="630" />
+                <meta property="og:image:alt" content="Contact Backbencher Coder - Get in Touch" />
+                
+                {/* Twitter Meta Tags */}
+                <meta name="twitter:card" content="summary_large_image" />
+                <meta name="twitter:title" content="Contact Backbencher Coder - Support & Collaboration" />
+                <meta 
+                    name="twitter:description" 
+                    content="Have questions or want to collaborate? Contact our team for programming support, course information, and community partnerships." 
+                />
+                <meta name="twitter:url" content="https://backbenchercoder.com/contact" />
+                <meta name="twitter:image" content="https://backbenchercoder.com/images/twitter-contact.jpg" />
+                <meta name="twitter:site" content="@backbenchercoder" />
+                <meta name="twitter:creator" content="@backbenchercoder" />
+                
+                {/* Additional SEO Meta Tags */}
+                <meta name="author" content="Backbencher Coder" />
+                <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+                <meta name="language" content="English" />
+                <meta name="revisit-after" content="7 days" />
+                <meta name="rating" content="general" />
+                <meta name="distribution" content="global" />
+                
+                {/* Canonical URL */}
+                <link rel="canonical" href="https://backbenchercoder.com/contact" />
+                
+                {/* Alternate Languages */}
+                <link rel="alternate" href="https://backbenchercoder.com/contact" hrefLang="x-default" />
+                <link rel="alternate" href="https://backbenchercoder.com/contact" hrefLang="en" />
+                
+                {/* Preload critical resources */}
+                <link rel="preload" as="image" href="./src/assets/contact-hero.jpg" />
+                
+                {/* Structured Data / JSON-LD for Contact Page */}
+                <script type="application/ld+json">
+                    {JSON.stringify({
+                        "@context": "https://schema.org",
+                        "@type": "ContactPage",
+                        "name": "Contact Backbencher Coder",
+                        "description": "Contact page for Backbencher Coder - Programming education platform",
+                        "url": "https://backbenchercoder.com/contact",
+                        "mainEntity": {
+                            "@type": "Organization",
+                            "name": "Backbencher Coder",
+                            "description": "Programming education platform for developers",
+                            "url": "https://backbenchercoder.com",
+                            "contactPoint": {
+                                "@type": "ContactPoint",
+                                "contactType": "customer service",
+                                "email": "support@backbencher.dev",
+                                "telephone": "+1-555-123-4567",
+                                "availableLanguage": "English",
+                                "areaServed": "Worldwide"
+                            },
+                            "address": {
+                                "@type": "PostalAddress",
+                                "streetAddress": "123 Backbencher Ave",
+                                "addressLocality": "Code City",
+                                "addressCountry": "Global"
+                            }
+                        },
+                        "breadcrumb": {
+                            "@type": "BreadcrumbList",
+                            "itemListElement": [
+                                {
+                                    "@type": "ListItem",
+                                    "position": 1,
+                                    "name": "Home",
+                                    "item": "https://backbenchercoder.com"
+                                },
+                                {
+                                    "@type": "ListItem",
+                                    "position": 2,
+                                    "name": "Contact",
+                                    "item": "https://backbenchercoder.com/contact"
+                                }
+                            ]
+                        }
+                    })}
+                </script>
+
+                {/* Additional Schema for Organization with Contact Points */}
+                <script type="application/ld+json">
+                    {JSON.stringify({
+                        "@context": "https://schema.org",
+                        "@type": "Organization",
+                        "name": "Backbencher Coder",
+                        "url": "https://backbenchercoder.com",
+                        "logo": "https://backbenchercoder.com/images/logo.png",
+                        "description": "Learn coding, build projects, and join a community of developers worldwide",
+                        "contactPoint": [
+                            {
+                                "@type": "ContactPoint",
+                                "contactType": "customer support",
+                                "email": "support@backbencher.dev",
+                                "telephone": "+1-555-123-4567",
+                                "availableLanguage": "English",
+                                "areaServed": "Worldwide"
+                            },
+                            {
+                                "@type": "ContactPoint",
+                                "contactType": "technical support",
+                                "email": "tech@backbencher.dev",
+                                "availableLanguage": "English",
+                                "areaServed": "Worldwide"
+                            },
+                            {
+                                "@type": "ContactPoint",
+                                "contactType": "collaboration",
+                                "email": "partnerships@backbencher.dev",
+                                "availableLanguage": "English",
+                                "areaServed": "Worldwide"
+                            }
+                        ],
+                        "sameAs": [
+                            "https://twitter.com/backbenchercoder",
+                            "https://github.com/backbenchercoder",
+                            "https://linkedin.com/company/backbenchercoder",
+                            "https://youtube.com/backbenchercoder"
+                        ]
+                    })}
+                </script>
+
+                {/* Additional Schema for WebPage */}
+                <script type="application/ld+json">
+                    {JSON.stringify({
+                        "@context": "https://schema.org",
+                        "@type": "WebPage",
+                        "name": "Contact Backbencher Coder",
+                        "description": "Contact form and information for Backbencher Coder programming platform",
+                        "url": "https://backbenchercoder.com/contact",
+                        "isPartOf": {
+                            "@type": "WebSite",
+                            "name": "Backbencher Coder",
+                            "url": "https://backbenchercoder.com"
+                        },
+                        "about": {
+                            "@type": "Organization",
+                            "name": "Backbencher Coder",
+                            "description": "Programming education platform"
+                        },
+                        "mainEntity": {
+                            "@type": "ContactPoint",
+                            "contactType": "customer service",
+                            "email": "support@backbencher.dev",
+                            "availableLanguage": "English"
+                        }
+                    })}
+                </script>
+            </Helmet>
+
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                     {/* Contact Form */}
