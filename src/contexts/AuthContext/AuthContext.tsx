@@ -4,9 +4,10 @@ import type { User } from "firebase/auth";
 export interface AuthContextType {
   user: User | null;
   loading: boolean;
-  googleLogin: () => Promise<any>;
-  createUser: (email: string, password: string) => Promise<any>;
-  loginUser: (email: string, password: string) => Promise<any>;
+  setLoading: React.Dispatch<React.SetStateAction<boolean>>;
+  googleLogin: () => Promise<import("firebase/auth").UserCredential>;
+  createUser: (email: string, password: string) => Promise<import("firebase/auth").UserCredential>;
+  loginUser: (email: string, password: string) => Promise<import("firebase/auth").UserCredential>;
   logOut: () => Promise<void>;
   ForgetPassword: (email: string) => Promise<void>;
 }

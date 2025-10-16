@@ -27,6 +27,13 @@ const EditProfile = () => {
   const { uid } = useParams<{ uid: string }>();
   const { user } = UseAuth();
   const navigate = useNavigate();
+
+  // Redirect if user doesn't exist or doesn't match the profile UID
+  useEffect(() => {
+    if (!user || user.uid !== uid) {
+      navigate('/');
+    }
+  }, [user, uid, navigate]);
   
   const [profile, setProfile] = useState<UserProfile | null>(null);
   const [loading, setLoading] = useState(true);
@@ -227,9 +234,10 @@ const EditProfile = () => {
         navigate(-1); // Go back to previous page
       }, 1500);
 
-    } catch (error: any) {
+    } catch (error) {
       console.error('Error updating profile:', error);
-      setError(error.response?.data?.message || 'Failed to update profile');
+      const message = error instanceof Error ? error.message : 'Failed to update profile';
+      setError(message);
     } finally {
       setSaving(false);
     }

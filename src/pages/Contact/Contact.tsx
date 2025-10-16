@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Helmet } from 'react-helmet-async';
 
 type FormState = {
@@ -15,7 +15,7 @@ const initialForm: FormState = {
     message: '',
 };
 
-const Contact: React.FC = () => {
+const Contact = () => {
     const [form, setForm] = useState<FormState>(initialForm);
     const [errors, setErrors] = useState<Partial<FormState>>({});
     const [submitting, setSubmitting] = useState(false);
@@ -48,325 +48,198 @@ const Contact: React.FC = () => {
 
         try {
             setSubmitting(true);
-            // Mock submit delay
             await new Promise(resolve => setTimeout(resolve, 900));
             setSuccess('Your message has been sent. We will get back to you soon.');
             setForm(initialForm);
-            } catch (err: unknown) {
-                console.error('Contact submit error:', err);
-                setSuccess('Failed to send message. Please try again later.');
-            } finally {
+        } catch (err: unknown) {
+            console.error('Contact submit error:', err);
+            setSuccess('Failed to send message. Please try again later.');
+        } finally {
             setSubmitting(false);
         }
     };
 
     return (
-        <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white py-12">
+        <div className="min-h-screen bg-gray-50 py-12">
             {/* SEO Meta Tags */}
             <Helmet>
-                {/* Basic Meta Tags */}
                 <title>Contact Backbencher Coder - Get Support & Collaborate</title>
                 <meta 
                     name="description" 
-                    content="Get in touch with Backbencher Coder team. Contact us for technical support, collaboration opportunities, course inquiries, and developer community partnerships." 
+                    content="Get in touch with Backbencher Coder team. Contact us for technical support, collaboration opportunities, and developer community partnerships." 
                 />
-                <meta 
-                    name="keywords" 
-                    content="contact backbencher coder, programming support, coding help, technical support, collaboration, course inquiry, developer community, contact form, get in touch" 
-                />
-                
-                {/* Open Graph Meta Tags */}
-                <meta property="og:title" content="Contact Backbencher Coder - Get Support & Collaborate" />
-                <meta 
-                    property="og:description" 
-                    content="Reach out to our team for technical support, course inquiries, collaboration opportunities, or to join our vibrant developer community." 
-                />
-                <meta property="og:url" content="https://backbenchercoder.com/contact" />
-                <meta property="og:type" content="website" />
-                <meta property="og:site_name" content="Backbencher Coder" />
-                <meta property="og:image" content="https://backbenchercoder.com/images/og-contact.jpg" />
-                <meta property="og:image:width" content="1200" />
-                <meta property="og:image:height" content="630" />
-                <meta property="og:image:alt" content="Contact Backbencher Coder - Get in Touch" />
-                
-                {/* Twitter Meta Tags */}
-                <meta name="twitter:card" content="summary_large_image" />
-                <meta name="twitter:title" content="Contact Backbencher Coder - Support & Collaboration" />
-                <meta 
-                    name="twitter:description" 
-                    content="Have questions or want to collaborate? Contact our team for programming support, course information, and community partnerships." 
-                />
-                <meta name="twitter:url" content="https://backbenchercoder.com/contact" />
-                <meta name="twitter:image" content="https://backbenchercoder.com/images/twitter-contact.jpg" />
-                <meta name="twitter:site" content="@backbenchercoder" />
-                <meta name="twitter:creator" content="@backbenchercoder" />
-                
-                {/* Additional SEO Meta Tags */}
-                <meta name="author" content="Backbencher Coder" />
-                <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
-                <meta name="language" content="English" />
-                <meta name="revisit-after" content="7 days" />
-                <meta name="rating" content="general" />
-                <meta name="distribution" content="global" />
-                
-                {/* Canonical URL */}
-                <link rel="canonical" href="https://backbenchercoder.com/contact" />
-                
-                {/* Alternate Languages */}
-                <link rel="alternate" href="https://backbenchercoder.com/contact" hrefLang="x-default" />
-                <link rel="alternate" href="https://backbenchercoder.com/contact" hrefLang="en" />
-                
-                {/* Preload critical resources */}
-                <link rel="preload" as="image" href="./src/assets/contact-hero.jpg" />
-                
-                {/* Structured Data / JSON-LD for Contact Page */}
-                <script type="application/ld+json">
-                    {JSON.stringify({
-                        "@context": "https://schema.org",
-                        "@type": "ContactPage",
-                        "name": "Contact Backbencher Coder",
-                        "description": "Contact page for Backbencher Coder - Programming education platform",
-                        "url": "https://backbenchercoder.com/contact",
-                        "mainEntity": {
-                            "@type": "Organization",
-                            "name": "Backbencher Coder",
-                            "description": "Programming education platform for developers",
-                            "url": "https://backbenchercoder.com",
-                            "contactPoint": {
-                                "@type": "ContactPoint",
-                                "contactType": "customer service",
-                                "email": "support@backbencher.dev",
-                                "telephone": "+1-555-123-4567",
-                                "availableLanguage": "English",
-                                "areaServed": "Worldwide"
-                            },
-                            "address": {
-                                "@type": "PostalAddress",
-                                "streetAddress": "123 Backbencher Ave",
-                                "addressLocality": "Code City",
-                                "addressCountry": "Global"
-                            }
-                        },
-                        "breadcrumb": {
-                            "@type": "BreadcrumbList",
-                            "itemListElement": [
-                                {
-                                    "@type": "ListItem",
-                                    "position": 1,
-                                    "name": "Home",
-                                    "item": "https://backbenchercoder.com"
-                                },
-                                {
-                                    "@type": "ListItem",
-                                    "position": 2,
-                                    "name": "Contact",
-                                    "item": "https://backbenchercoder.com/contact"
-                                }
-                            ]
-                        }
-                    })}
-                </script>
-
-                {/* Additional Schema for Organization with Contact Points */}
-                <script type="application/ld+json">
-                    {JSON.stringify({
-                        "@context": "https://schema.org",
-                        "@type": "Organization",
-                        "name": "Backbencher Coder",
-                        "url": "https://backbenchercoder.com",
-                        "logo": "https://backbenchercoder.com/images/logo.png",
-                        "description": "Learn coding, build projects, and join a community of developers worldwide",
-                        "contactPoint": [
-                            {
-                                "@type": "ContactPoint",
-                                "contactType": "customer support",
-                                "email": "support@backbencher.dev",
-                                "telephone": "+1-555-123-4567",
-                                "availableLanguage": "English",
-                                "areaServed": "Worldwide"
-                            },
-                            {
-                                "@type": "ContactPoint",
-                                "contactType": "technical support",
-                                "email": "tech@backbencher.dev",
-                                "availableLanguage": "English",
-                                "areaServed": "Worldwide"
-                            },
-                            {
-                                "@type": "ContactPoint",
-                                "contactType": "collaboration",
-                                "email": "partnerships@backbencher.dev",
-                                "availableLanguage": "English",
-                                "areaServed": "Worldwide"
-                            }
-                        ],
-                        "sameAs": [
-                            "https://twitter.com/backbenchercoder",
-                            "https://github.com/backbenchercoder",
-                            "https://linkedin.com/company/backbenchercoder",
-                            "https://youtube.com/backbenchercoder"
-                        ]
-                    })}
-                </script>
-
-                {/* Additional Schema for WebPage */}
-                <script type="application/ld+json">
-                    {JSON.stringify({
-                        "@context": "https://schema.org",
-                        "@type": "WebPage",
-                        "name": "Contact Backbencher Coder",
-                        "description": "Contact form and information for Backbencher Coder programming platform",
-                        "url": "https://backbenchercoder.com/contact",
-                        "isPartOf": {
-                            "@type": "WebSite",
-                            "name": "Backbencher Coder",
-                            "url": "https://backbenchercoder.com"
-                        },
-                        "about": {
-                            "@type": "Organization",
-                            "name": "Backbencher Coder",
-                            "description": "Programming education platform"
-                        },
-                        "mainEntity": {
-                            "@type": "ContactPoint",
-                            "contactType": "customer service",
-                            "email": "support@backbencher.dev",
-                            "availableLanguage": "English"
-                        }
-                    })}
-                </script>
             </Helmet>
 
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div className="text-center mb-12">
+                    <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-4">Contact Us</h1>
+                    <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+                        Have questions or want to collaborate? We'd love to hear from you. Send us a message and we'll respond as soon as possible.
+                    </p>
+                </div>
+
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                     {/* Contact Form */}
-                    <div className="lg:col-span-2 bg-white rounded-2xl shadow-lg p-6 sm:p-8">
-                        <h1 className="text-2xl sm:text-3xl font-bold text-gray-900 mb-2">Contact Us</h1>
-                        <p className="text-gray-600 mb-6">Have a question or want to collaborate? Send us a message and we'll reply as soon as possible.</p>
-
-                        <form onSubmit={handleSubmit} noValidate>
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="lg:col-span-2 bg-white rounded-xl shadow-sm p-6 sm:p-8">
+                        <form onSubmit={handleSubmit} noValidate className="space-y-6">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                                 <div>
-                                    <label className="text-sm font-medium text-gray-700">Name</label>
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">Name</label>
                                     <input
                                         name="name"
                                         value={form.name}
                                         onChange={handleChange}
-                                        className={`mt-1 block w-full rounded-lg border px-3 py-2 shadow-sm focus:outline-none focus:ring-2 ${errors.name ? 'border-red-300 focus:ring-red-200' : 'border-gray-200 focus:ring-blue-200'}`}
+                                        className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 ${
+                                            errors.name 
+                                                ? 'border-red-300 focus:ring-red-200' 
+                                                : 'border-gray-300 focus:ring-blue-500 focus:border-blue-500'
+                                        }`}
                                         placeholder="Your full name"
-                                        aria-invalid={!!errors.name}
-                                        aria-describedby={errors.name ? 'name-error' : undefined}
                                     />
-                                    {errors.name && <p id="name-error" className="mt-1 text-xs text-red-600">{errors.name}</p>}
+                                    {errors.name && <p className="mt-2 text-sm text-red-600">{errors.name}</p>}
                                 </div>
 
                                 <div>
-                                    <label className="text-sm font-medium text-gray-700">Email</label>
+                                    <label className="block text-sm font-medium text-gray-700 mb-2">Email</label>
                                     <input
                                         name="email"
                                         value={form.email}
                                         onChange={handleChange}
-                                        className={`mt-1 block w-full rounded-lg border px-3 py-2 shadow-sm focus:outline-none focus:ring-2 ${errors.email ? 'border-red-300 focus:ring-red-200' : 'border-gray-200 focus:ring-blue-200'}`}
+                                        className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 ${
+                                            errors.email 
+                                                ? 'border-red-300 focus:ring-red-200' 
+                                                : 'border-gray-300 focus:ring-blue-500 focus:border-blue-500'
+                                        }`}
                                         placeholder="you@domain.com"
-                                        aria-invalid={!!errors.email}
-                                        aria-describedby={errors.email ? 'email-error' : undefined}
                                     />
-                                    {errors.email && <p id="email-error" className="mt-1 text-xs text-red-600">{errors.email}</p>}
+                                    {errors.email && <p className="mt-2 text-sm text-red-600">{errors.email}</p>}
                                 </div>
                             </div>
 
-                            <div className="mt-4">
-                                <label className="text-sm font-medium text-gray-700">Subject</label>
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">Subject</label>
                                 <input
                                     name="subject"
                                     value={form.subject}
                                     onChange={handleChange}
-                                    className={`mt-1 block w-full rounded-lg border px-3 py-2 shadow-sm focus:outline-none focus:ring-2 ${errors.subject ? 'border-red-300 focus:ring-red-200' : 'border-gray-200 focus:ring-blue-200'}`}
-                                    placeholder="Subject"
-                                    aria-invalid={!!errors.subject}
-                                    aria-describedby={errors.subject ? 'subject-error' : undefined}
+                                    className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 ${
+                                        errors.subject 
+                                            ? 'border-red-300 focus:ring-red-200' 
+                                            : 'border-gray-300 focus:ring-blue-500 focus:border-blue-500'
+                                    }`}
+                                    placeholder="What's this about?"
                                 />
-                                {errors.subject && <p id="subject-error" className="mt-1 text-xs text-red-600">{errors.subject}</p>}
+                                {errors.subject && <p className="mt-2 text-sm text-red-600">{errors.subject}</p>}
                             </div>
 
-                            <div className="mt-4">
-                                <label className="text-sm font-medium text-gray-700">Message</label>
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">Message</label>
                                 <textarea
                                     name="message"
                                     value={form.message}
                                     onChange={handleChange}
                                     rows={6}
-                                    className={`mt-1 block w-full rounded-lg border px-3 py-2 shadow-sm focus:outline-none focus:ring-2 ${errors.message ? 'border-red-300 focus:ring-red-200' : 'border-gray-200 focus:ring-blue-200'}`}
-                                    placeholder="Write your message here..."
-                                    aria-invalid={!!errors.message}
-                                    aria-describedby={errors.message ? 'message-error' : undefined}
+                                    className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 ${
+                                        errors.message 
+                                            ? 'border-red-300 focus:ring-red-200' 
+                                            : 'border-gray-300 focus:ring-blue-500 focus:border-blue-500'
+                                    }`}
+                                    placeholder="Tell us more about your inquiry..."
                                 />
-                                {errors.message && <p id="message-error" className="mt-1 text-xs text-red-600">{errors.message}</p>}
+                                {errors.message && <p className="mt-2 text-sm text-red-600">{errors.message}</p>}
                             </div>
 
-                            <div className="mt-6 flex items-center gap-4">
-                                <button
-                                    type="submit"
-                                    disabled={submitting}
-                                    className="inline-flex items-center px-5 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl shadow hover:from-blue-700 hover:to-indigo-700 disabled:opacity-60"
-                                >
-                                    {submitting ? 'Sending...' : 'Send Message'}
-                                </button>
+                            <button
+                                type="submit"
+                                disabled={submitting}
+                                className="w-full bg-blue-600 text-white py-3 px-6 rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors font-medium"
+                            >
+                                {submitting ? 'Sending Message...' : 'Send Message'}
+                            </button>
 
-                                {success && <p className="text-sm text-green-600">{success}</p>}
-                            </div>
+                            {success && (
+                                <div className={`p-4 rounded-lg ${
+                                    success.includes('Failed') ? 'bg-red-50 text-red-700' : 'bg-green-50 text-green-700'
+                                }`}>
+                                    {success}
+                                </div>
+                            )}
                         </form>
                     </div>
 
-                    {/* Sidebar with contact info & map */}
-                    <aside className="bg-white rounded-2xl shadow-lg p-6 sm:p-8 flex flex-col gap-6">
-                        <div>
-                            <h3 className="text-lg font-semibold text-gray-900">Contact Information</h3>
-                            <p className="text-gray-600 mt-2">Reach out via email or phone, or visit our office during business hours.</p>
-                        </div>
-
-                        <div className="space-y-4">
-                            <div className="flex items-start gap-3">
-                                <div className="w-10 h-10 bg-blue-50 rounded-lg flex items-center justify-center">
-                                    <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                                    </svg>
+                    {/* Contact Information */}
+                    <div className="space-y-6">
+                        <div className="bg-white rounded-xl shadow-sm p-6">
+                            <h3 className="text-lg font-semibold text-gray-900 mb-4">Get in Touch</h3>
+                            
+                            <div className="space-y-4">
+                                <div className="flex items-start gap-4">
+                                    <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                                        <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <p className="text-sm font-medium text-gray-900">Email</p>
+                                        <p className="text-gray-600">support@backbencher.dev</p>
+                                    </div>
                                 </div>
-                                <div>
-                                    <p className="text-sm text-gray-500">Email</p>
-                                    <p className="font-medium text-gray-900">support@backbencher.dev</p>
+
+                                <div className="flex items-start gap-4">
+                                    <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                                        <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <p className="text-sm font-medium text-gray-900">Phone</p>
+                                        <p className="text-gray-600">+1 (555) 123-4567</p>
+                                    </div>
+                                </div>
+
+                                <div className="flex items-start gap-4">
+                                    <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                                        <svg className="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <p className="text-sm font-medium text-gray-900">Address</p>
+                                        <p className="text-gray-600">123 Backbencher Ave<br />Code City, Global</p>
+                                    </div>
                                 </div>
                             </div>
+                        </div>
 
-                            <div className="flex items-start gap-3">
-                                <div className="w-10 h-10 bg-green-50 rounded-lg flex items-center justify-center">
-                                    <svg className="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5h2l.4 2M7 13h10l4-8H5.4M7 13l-1 5h13" />
-                                    </svg>
+                        <div className="bg-white rounded-xl shadow-sm p-6">
+                            <h3 className="text-lg font-semibold text-gray-900 mb-4">Response Time</h3>
+                            <div className="space-y-3">
+                                <div className="flex justify-between items-center">
+                                    <span className="text-gray-600">Email Support</span>
+                                    <span className="text-sm font-medium text-gray-900">Within 24 hours</span>
                                 </div>
-                                <div>
-                                    <p className="text-sm text-gray-500">Phone</p>
-                                    <p className="font-medium text-gray-900">+1 (555) 123-4567</p>
+                                <div className="flex justify-between items-center">
+                                    <span className="text-gray-600">Technical Issues</span>
+                                    <span className="text-sm font-medium text-gray-900">Within 48 hours</span>
                                 </div>
-                            </div>
-
-                            <div className="flex items-start gap-3">
-                                <div className="w-10 h-10 bg-amber-50 rounded-lg flex items-center justify-center">
-                                    <svg className="w-5 h-5 text-amber-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 11c0 .9-.4 1.7-1 2.3L6 18l3.6-5c.6-.6 1-1.4 1-2.3 0-1.9 1.5-3.5 3.4-3.5S17.8 7 17.8 8.9c0 .9-.4 1.7-1 2.3L14 14l-2-3z" />
-                                    </svg>
-                                </div>
-                                <div>
-                                    <p className="text-sm text-gray-500">Address</p>
-                                    <p className="font-medium text-gray-900">123 Backbencher Ave, Code City</p>
+                                <div className="flex justify-between items-center">
+                                    <span className="text-gray-600">Collaboration</span>
+                                    <span className="text-sm font-medium text-gray-900">Within 3 days</span>
                                 </div>
                             </div>
                         </div>
 
-                        <div className="w-full h-40 bg-gray-50 rounded-lg border border-dashed border-gray-200 flex items-center justify-center text-gray-400">
-                            Map placeholder
+                        <div className="bg-blue-50 rounded-xl p-6 border border-blue-200">
+                            <h3 className="text-lg font-semibold text-blue-900 mb-2">Need Immediate Help?</h3>
+                            <p className="text-blue-700 text-sm mb-4">
+                                Check our documentation and community forums for quick answers to common questions.
+                            </p>
+                            <button className="w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition-colors text-sm font-medium">
+                                Visit Help Center
+                            </button>
                         </div>
-                    </aside>
+                    </div>
                 </div>
             </div>
         </div>
