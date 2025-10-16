@@ -34,6 +34,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
   const [loading, setLoading] = useState(true);
   const [userRole, setUserRole] = useState<string | null>(null);
   const [userProfile, setUserProfile] = useState<any>(null);
+    const [isInitialized, setIsInitialized] = useState(false); // ✅ New state
 
   // Save user data to localStorage
   const syncUserDataToLocalStorage = (userData: any) => {
@@ -75,7 +76,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
     try {
       const storedProfile = localStorage.getItem(LOCAL_STORAGE_KEYS.USER_PROFILE);
       const storedRole = localStorage.getItem(LOCAL_STORAGE_KEYS.USER_ROLE);
-      const storedData = localStorage.getItem(LOCAL_STORAGE_KEYS.USER_DATA);
+      // const storedData = localStorage.getItem(LOCAL_STORAGE_KEYS.USER_DATA);
 
       if (storedProfile && storedRole) {
         setUserProfile(JSON.parse(storedProfile));
@@ -190,7 +191,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
     return sendPasswordResetEmail(auth, email);
   }
 
-  // onauth state change
+ // onauth state change
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
       setUser(currentUser);
@@ -205,6 +206,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
       }
       
       setLoading(false);
+      setIsInitialized(true); // ✅ Mark as initialized
       console.log('🔐 Auth state changed:', currentUser);
     })
     return () => unsubscribe();
@@ -215,6 +217,7 @@ const AuthProvider = ({ children }: AuthProviderProps) => {
     loading,
     userRole,
     userProfile,
+    isInitialized, // ✅ Add to context
     setLoading,
     googleLogin,
     createUser,

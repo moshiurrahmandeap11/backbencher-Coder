@@ -7,6 +7,7 @@ export interface AuthContextType {
   loading: boolean;
   userRole: string | null;
   userProfile: any;
+    isInitialized: boolean; // ✅ New
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
   googleLogin: () => Promise<import("firebase/auth").UserCredential>;
   createUser: (email: string, password: string) => Promise<import("firebase/auth").UserCredential>;

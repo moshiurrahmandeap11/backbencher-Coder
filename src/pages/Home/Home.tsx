@@ -1,5 +1,7 @@
 
 import { Helmet } from 'react-helmet-async';
+import WhatInMind from './HomeElements/whatInMind/WhatInMind';
+import PopUpRegister from '../PopUpRegister/PopUpRegister';
 
 const Home = () => {
     return (
@@ -137,7 +139,10 @@ const Home = () => {
 
             {/* Home page content */}
             <div>
-                this is home
+                <WhatInMind></WhatInMind>
+
+                {/* pop up register */}
+                <PopUpRegister></PopUpRegister>
             </div>
         </div>
     );
