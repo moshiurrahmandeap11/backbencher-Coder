@@ -4,6 +4,7 @@ import Loader from "../../../sharedItems/Loader/Loader";
 import { useNavigate } from "react-router";
 import toast from "react-hot-toast";
 import MainButton from "../../../sharedItems/MainButton/MainButton";
+import Swal from "sweetalert2";
 
 interface User {
   _id: string;
@@ -55,50 +56,213 @@ const UserManagement = () => {
         }
     };
 
-    const handleEditProfile = (user: User) => {
-        const firstName = user?.name?.split(" ")[0] || "user";
-        navigate(`/edit-profile/${firstName}/${user.uid}`);
+    const handleEditProfile = async (user: User) => {
+        const { value: formValues } = await Swal.fire({
+            title: `Edit User: ${user.name || 'No Name'}`,
+            html: `
+                <div class="text-left space-y-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Name</label>
+                        <input 
+                            id="swal-name" 
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" 
+                            value="${user.name || ''}" 
+                            placeholder="Enter name"
+                        />
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                        <input 
+                            id="swal-email" 
+                            type="email" 
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" 
+                            value="${user.email || ''}" 
+                            placeholder="Enter email"
+                        />
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Age</label>
+                        <input 
+                            id="swal-age" 
+                            type="number" 
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" 
+                            value="${user.age || ''}" 
+                            placeholder="Enter age"
+                        />
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Role</label>
+                        <select 
+                            id="swal-role" 
+                            class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        >
+                            ${roleOptions.map(option => 
+                                `<option value="${option.value}" ${user.role === option.value ? 'selected' : ''}>${option.label}</option>`
+                            ).join('')}
+                        </select>
+                    </div>
+                    <div class="bg-gray-50 p-3 rounded-md">
+                        <h4 class="font-medium text-gray-700 mb-2">User Information</h4>
+                        <div class="text-sm text-gray-600 space-y-1">
+                            <div>User ID: ${user.uid}</div>
+                            <div>Joined: ${formatDate(user.createdat)}</div>
+                            <div>Last Login: ${formatDateTime(user.lastlogin)}</div>
+                        </div>
+                    </div>
+                </div>
+            `,
+            focusConfirm: false,
+            showCancelButton: true,
+            confirmButtonText: 'Update User',
+            cancelButtonText: 'Cancel',
+            confirmButtonColor: '#2563eb',
+            cancelButtonColor: '#6b7280',
+            preConfirm: () => {
+                const name = (document.getElementById('swal-name') as HTMLInputElement)?.value;
+                const email = (document.getElementById('swal-email') as HTMLInputElement)?.value;
+                const age = (document.getElementById('swal-age') as HTMLInputElement)?.value;
+                const role = (document.getElementById('swal-role') as HTMLSelectElement)?.value;
+
+                // Validation
+                if (!name?.trim()) {
+                    Swal.showValidationMessage('Name is required');
+                    return false;
+                }
+                if (!email?.trim()) {
+                    Swal.showValidationMessage('Email is required');
+                    return false;
+                }
+                if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                    Swal.showValidationMessage('Please enter a valid email');
+                    return false;
+                }
+
+                return {
+                    name: name.trim(),
+                    email: email.trim(),
+                    age: age ? parseInt(age) : null,
+                    role: role
+                };
+            }
+        });
+
+        if (formValues) {
+            try {
+                await updateUserProfile(user.uid, formValues);
+            } catch (error) {
+                console.error('Error updating user:', error);
+            }
+        }
+    };
+
+    const updateUserProfile = async (uid: string, data: any) => {
+        try {
+            const response = await axiosInstance.put(`/users/${uid}`, data);
+            
+            // Update local state
+            setUsers(prev => prev.map(user => 
+                user.uid === uid ? { ...user, ...data } : user
+            ));
+            
+            toast.success('User profile updated successfully');
+            return response.data;
+        } catch (error: any) {
+            console.error('Error updating user profile:', error);
+            const errorMessage = error.response?.data?.message || 'Failed to update user profile';
+            toast.error(errorMessage);
+            throw error;
+        }
     };
 
     const handleDelete = async (userToDelete: User) => {
-        if (!window.confirm(`Are you sure you want to delete user: ${userToDelete.name || userToDelete.email}? This action cannot be undone.`)) {
-            return;
-        }
+        const result = await Swal.fire({
+            title: 'Are you sure?',
+            text: `You are about to delete user: ${userToDelete.name || userToDelete.email}. This action cannot be undone!`,
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#dc2626',
+            cancelButtonColor: '#6b7280',
+            confirmButtonText: 'Yes, delete it!',
+            cancelButtonText: 'Cancel',
+            background: '#fff',
+            iconColor: '#ef4444'
+        });
 
-        try {
-            setDeleteLoading(userToDelete.uid);
-            await axiosInstance.delete(`/users/${userToDelete.uid}`);
-            
-            setUsers(prev => prev.filter(user => user.uid !== userToDelete.uid));
-            toast.success('User deleted successfully');
-        } catch (error: any) {
-            console.error('Error deleting user:', error);
-            const errorMessage = error.response?.data?.message || 'Failed to delete user';
-            toast.error(errorMessage);
-        } finally {
-            setDeleteLoading(null);
+        if (result.isConfirmed) {
+            try {
+                setDeleteLoading(userToDelete.uid);
+                await axiosInstance.delete(`/users/${userToDelete.uid}`);
+                
+                setUsers(prev => prev.filter(user => user.uid !== userToDelete.uid));
+                
+                Swal.fire({
+                    title: 'Deleted!',
+                    text: 'User has been deleted successfully.',
+                    icon: 'success',
+                    confirmButtonColor: '#2563eb',
+                    timer: 2000
+                });
+            } catch (error: any) {
+                console.error('Error deleting user:', error);
+                const errorMessage = error.response?.data?.message || 'Failed to delete user';
+                
+                Swal.fire({
+                    title: 'Error!',
+                    text: errorMessage,
+                    icon: 'error',
+                    confirmButtonColor: '#dc2626'
+                });
+            } finally {
+                setDeleteLoading(null);
+            }
         }
     };
 
     const handleRoleChange = async (user: User, newRole: string) => {
-        try {
-            setRoleLoading(user.uid);
-            
-            await axiosInstance.patch(`/users/${user.uid}/role`, { role: newRole });
-            
-            // Update local state
-            setUsers(prev => prev.map(u => 
-                u.uid === user.uid ? { ...u, role: newRole } : u
-            ));
-            
-            const roleLabel = roleOptions.find(r => r.value === newRole)?.label || newRole;
-            toast.success(`User role updated to ${roleLabel}`);
-        } catch (error: any) {
-            console.error('Error updating role:', error);
-            const errorMessage = error.response?.data?.message || 'Failed to update role';
-            toast.error(errorMessage);
-        } finally {
-            setRoleLoading(null);
+        const result = await Swal.fire({
+            title: 'Change Role',
+            text: `Are you sure you want to change ${user.name || user.email}'s role to ${newRole}?`,
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonColor: '#2563eb',
+            cancelButtonColor: '#6b7280',
+            confirmButtonText: 'Yes, change role!',
+            cancelButtonText: 'Cancel'
+        });
+
+        if (result.isConfirmed) {
+            try {
+                setRoleLoading(user.uid);
+                
+                await axiosInstance.patch(`/users/${user.uid}/role`, { role: newRole });
+                
+                // Update local state
+                setUsers(prev => prev.map(u => 
+                    u.uid === user.uid ? { ...u, role: newRole } : u
+                ));
+                
+                const roleLabel = roleOptions.find(r => r.value === newRole)?.label || newRole;
+                
+                Swal.fire({
+                    title: 'Success!',
+                    text: `User role updated to ${roleLabel}`,
+                    icon: 'success',
+                    confirmButtonColor: '#2563eb',
+                    timer: 2000
+                });
+            } catch (error: any) {
+                console.error('Error updating role:', error);
+                const errorMessage = error.response?.data?.message || 'Failed to update role';
+                
+                Swal.fire({
+                    title: 'Error!',
+                    text: errorMessage,
+                    icon: 'error',
+                    confirmButtonColor: '#dc2626'
+                });
+            } finally {
+                setRoleLoading(null);
+            }
         }
     };
 

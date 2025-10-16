@@ -3,7 +3,7 @@ import axios from "axios";
 import type { AxiosInstance } from "axios";
 
 // Base URL jeikhane API ase
-const BASE_URL = "https://backbencher-server.onrender.com/bb/v1";
+const BASE_URL = "http://localhost:3000/bb/v1";
 // https://backbencher-server.onrender.com/bb/v1
 
 // Create Axios instance
