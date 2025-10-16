@@ -1,5 +1,5 @@
 // components/ProtectedRoute/ProtectedRoute.tsx
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
 import { Navigate } from 'react-router';
 import UseAuth from '../../../hooks/UseAuth/UseAuth';
 import Loader from '../../sharedItems/Loader/Loader';
