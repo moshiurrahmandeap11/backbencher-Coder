@@ -35,99 +35,111 @@ const Register = () => {
     }
   };
 
-  const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault();
-    setError("");
-    setSuccess("");
+  // Updated Register.tsx - Add localStorage sync after successful registration
+const handleSubmit = async (e: FormEvent) => {
+  e.preventDefault();
+  setError("");
+  setSuccess("");
 
-    // ✅ Check if registration is allowed
-    if (!allowRegistration) {
-      setError("New user registrations are currently disabled. Please try again later.");
-      return;
+  // ✅ Check if registration is allowed
+  if (!allowRegistration) {
+    setError("New user registrations are currently disabled. Please try again later.");
+    return;
+  }
+
+  // Validation
+  if (password !== confirmPassword) {
+    setError("Passwords do not match");
+    return;
+  }
+
+  if (password.length < 6) {
+    setError("Password should be at least 6 characters");
+    return;
+  }
+
+  if (!name.trim()) {
+    setError("Full name is required");
+    return;
+  }
+
+  setLoading(true);
+
+  try {
+    console.log("🔥 Starting registration process...");
+    
+    // 1. Firebase-এ ইউজার তৈরি করুন
+    console.log("1. Creating Firebase user...");
+    const userCredential = await createUser(email, password);
+    console.log("✅ Firebase user created:", userCredential.user);
+
+    const userUid = userCredential.user.uid;
+
+    // 2. MongoDB-এর জন্য ডাটা প্রস্তুত করুন
+    const userData = {
+      uid: userUid,
+      name: name.trim(),
+      email: email.trim(),
+      age: age ? parseInt(age) : null
+    };
+
+    console.log("2. Prepared user data for MongoDB:", userData);
+
+    // 3. MongoDB-এ ইউজার তৈরি করুন
+    console.log("3. Sending POST request to /users...");
+    const response = await axiosInstance.post("/users", userData, { 
+      timeout: 15000
+    });
+    
+    console.log("✅ MongoDB response:", response.data);
+
+    // 4. Sync user data to localStorage
+    localStorage.setItem('bb_user_profile', JSON.stringify(response.data.data));
+    localStorage.setItem('bb_user_role', response.data.data.role || 'user');
+    localStorage.setItem('bb_last_sync', new Date().toISOString());
+    console.log('✅ User data synced to localStorage after registration');
+
+    setSuccess("Registration successful! Redirecting to login...");
+
+    // Form reset
+    setEmail("");
+    setPassword("");
+    setConfirmPassword("");
+    setName("");
+    setAge("");
+
+    // Redirect after success
+    setTimeout(() => navigate("/auth/login"), 1500);
+
+  } catch (error: any) {
+    console.error("❌ Registration failed:", error);
+    
+    // Clear localStorage on registration failure
+    localStorage.removeItem('bb_user_profile');
+    localStorage.removeItem('bb_user_role');
+    localStorage.removeItem('bb_last_sync');
+    
+    // Detailed error handling
+    if (error.code === 'auth/email-already-in-use') {
+      setError("This email is already registered. Please use a different email.");
+    } else if (error.code === 'auth/invalid-email') {
+      setError("Invalid email address.");
+    } else if (error.code === 'auth/weak-password') {
+      setError("Password is too weak.");
+    } else if (error.response?.data) {
+      console.error("📡 Server error response:", error.response.data);
+      setError(error.response.data.message || "Registration failed. Please try again.");
+    } else if (error.request) {
+      console.error("🌐 Network error - No response received");
+      setError("Network error. Please check if server is running.");
+    } else {
+      setError(error.message || "Registration failed. Please try again.");
     }
-
-    // Validation
-    if (password !== confirmPassword) {
-      setError("Passwords do not match");
-      return;
-    }
-
-    if (password.length < 6) {
-      setError("Password should be at least 6 characters");
-      return;
-    }
-
-    if (!name.trim()) {
-      setError("Full name is required");
-      return;
-    }
-
-    setLoading(true);
-
-    try {
-      console.log("🔥 Starting registration process...");
-      
-      // 1. Firebase-এ ইউজার তৈরি করুন
-      console.log("1. Creating Firebase user...");
-      const userCredential = await createUser(email, password);
-      console.log("✅ Firebase user created:", userCredential.user);
-
-      const userUid = userCredential.user.uid;
-
-      // 2. MongoDB-এর জন্য ডাটা প্রস্তুত করুন
-      const userData = {
-        uid: userUid,
-        name: name.trim(),
-        email: email.trim(),
-        age: age ? parseInt(age) : null
-      };
-
-      console.log("2. Prepared user data for MongoDB:", userData);
-
-      // 3. MongoDB-এ ইউজার তৈরি করুন
-      console.log("3. Sending POST request to /users...");
-      const response = await axiosInstance.post("/users", userData, { 
-        timeout: 15000
-      });
-      
-      console.log("✅ MongoDB response:", response.data);
-
-      setSuccess("Registration successful! Redirecting to login...");
-
-      // Form reset
-      setEmail("");
-      setPassword("");
-      setConfirmPassword("");
-      setName("");
-      setAge("");
-
-      // Redirect after success
-      setTimeout(() => navigate("/auth/login"), 1500);
-
-    } catch (error: any) {
-      console.error("❌ Registration failed:", error);
-      
-      // Detailed error handling
-      if (error.code === 'auth/email-already-in-use') {
-        setError("This email is already registered. Please use a different email.");
-      } else if (error.code === 'auth/invalid-email') {
-        setError("Invalid email address.");
-      } else if (error.code === 'auth/weak-password') {
-        setError("Password is too weak.");
-      } else if (error.response?.data) {
-        console.error("📡 Server error response:", error.response.data);
-        setError(error.response.data.message || "Registration failed. Please try again.");
-      } else if (error.request) {
-        console.error("🌐 Network error - No response received");
-        setError("Network error. Please check if server is running.");
-      } else {
-        setError(error.message || "Registration failed. Please try again.");
-      }
-    } finally {
-      console.log("🏁 Registration process completed");
-      setLoading(false);
-    }
-  };
+  } finally {
+    console.log("🏁 Registration process completed");
+    setLoading(false);
+  }
+};
 
   // ✅ Show disabled message if registration is not allowed
   if (!allowRegistration) {

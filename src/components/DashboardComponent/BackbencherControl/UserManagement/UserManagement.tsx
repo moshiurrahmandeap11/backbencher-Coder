@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import axiosInstance from "../../../../hooks/AxiosInstance/AxiosInstance";
 import Loader from "../../../sharedItems/Loader/Loader";
-import { useNavigate } from "react-router";
 import toast from "react-hot-toast";
 import MainButton from "../../../sharedItems/MainButton/MainButton";
 import Swal from "sweetalert2";
@@ -27,7 +26,6 @@ const UserManagement = () => {
     const [deleteLoading, setDeleteLoading] = useState<string | null>(null);
     const [roleLoading, setRoleLoading] = useState<string | null>(null);
 
-    const navigate = useNavigate();
 
     const roleOptions = [
         { value: 'user', label: 'Normal User', color: 'gray' },

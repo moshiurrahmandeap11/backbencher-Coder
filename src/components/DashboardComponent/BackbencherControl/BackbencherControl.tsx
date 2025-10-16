@@ -1,4 +1,4 @@
-import  { useState } from 'react';
+import { useState, useEffect } from 'react';
 import MainContent from './MainContent/MainContent';
 import UserManagement from './UserManagement/UserManagement';
 import Header from './Header/Header';
@@ -6,9 +6,17 @@ import Sidebar from './Sidebar/Sidebar';
 import Subscribers from './Subscribers/Subscribers';
 import Settings from './Settings/Settings';
 
-
 const BackbencherControl = () => {
-    const [activeComponent, setActiveComponent] = useState('dashboard');
+    // Get active component from localStorage or default to 'dashboard'
+    const [activeComponent, setActiveComponent] = useState(() => {
+        const saved = localStorage.getItem('bb-admin-active-menu');
+        return saved || 'dashboard';
+    });
+
+    // Save active component to localStorage whenever it changes
+    useEffect(() => {
+        localStorage.setItem('bb-admin-active-menu', activeComponent);
+    }, [activeComponent]);
 
     // Component mapping
     const renderComponent = () => {
@@ -18,9 +26,9 @@ const BackbencherControl = () => {
             case 'users':
                 return <UserManagement />;
             case 'subscribers':
-                return <Subscribers></Subscribers>;
+                return <Subscribers />;
             case 'settings':
-                return <Settings></Settings>;
+                return <Settings />;
             case 'reports':
                 return <div className="bg-white rounded-lg shadow-lg p-6">Reports Component</div>;
             default:

@@ -14,6 +14,8 @@ export interface AuthContextType {
   logOut: () => Promise<void>;
   ForgetPassword: (email: string) => Promise<void>;
   refreshUserProfile: () => Promise<void>;
+  syncUserDataToLocalStorage: (userData: any) => void;
+  clearLocalStorageData: () => void;
 }
 
 export const AuthContext = createContext<AuthContextType | null>(null);

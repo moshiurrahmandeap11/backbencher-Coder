@@ -42,90 +42,115 @@ const Login = () => {
     }
   };
 
-  const handleSubmit = async (e: FormEvent) => {
-    e.preventDefault();
-    setError("");
-    setLoading(true);
+ // Updated Login.tsx - Add localStorage sync after successful login
+const handleSubmit = async (e: FormEvent) => {
+  e.preventDefault();
+  setError("");
+  setLoading(true);
 
+  try {
+    const user = await loginUser(email, password);
+    const userUid = user?.user?.uid;
+    
+    // Update last login
+    await updateLastLogin(userUid);
+    
+    // Fetch and sync user data to localStorage
+    await fetchAndSyncUserData(userUid);
+    
+    navigate("/");
+  } catch {
+    setError("Failed to login. Please check your credentials.");
+  } finally {
+    setLoading(false);
+  }
+};
+
+const handleGoogleLogin = async () => {
+  setError("");
+  setLoading(true);
+  try {
+    const user = await googleLogin();
+    const userUid = user?.user?.uid;
+    const userEmail = user?.user?.email;
+    
+    // ✅ Check if registration is allowed for NEW users
+    let userExists = false;
+    
     try {
-      const user = await loginUser(email, password);
-      const userUid = user?.user?.uid;
-      await updateLastLogin(userUid);
-      navigate("/");
-    } catch {
-      setError("Failed to login. Please check your credentials.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleGoogleLogin = async () => {
-    setError("");
-    setLoading(true);
-    try {
-      const user = await googleLogin();
-      const userUid = user?.user?.uid;
-      const userEmail = user?.user?.email;
-      
-      // ✅ Check if registration is allowed for NEW users
-      let userExists = false;
-      
-      try {
-        await axiosInstance.get(`/users/${userUid}`);
-        userExists = true;
-      } catch (err: any) {
-        if (err.response?.status === 404) {
-          userExists = false;
-        } else {
-          throw err;
-        }
-      }
-
-      // ✅ If user doesn't exist and registration is disabled, block the login
-      if (!userExists && !allowRegistration) {
-        // Sign out the user from Firebase since registration is disabled
-        await user.user.delete();
-        setError("New user registrations are currently disabled. Please try again later.");
-        setLoading(false);
-        return;
-      }
-
-      const userData = {
-        uid: userUid,
-        name: user?.user?.displayName || "No Name",
-        email: userEmail,
-        age: null,
-        lastLogin: new Date().toISOString(),
-      };
-
-      if (!userExists) {
-        // User not found → create new (only if registration is allowed)
-        await axiosInstance.post(`/users`, userData);
-      } else {
-        // User exists → just update lastLogin
-        await axiosInstance.patch(`/users/${userUid}/last-login`, {
-          lastLogin: new Date().toISOString(),
-        });
-      }
-
-      navigate("/");
+      await axiosInstance.get(`/users/${userUid}`);
+      userExists = true;
     } catch (err: any) {
-      console.error("Google login error:", err);
-      
-      // Handle specific error cases
-      if (err.message?.includes("registrations are currently disabled")) {
-        setError(err.message);
-      } else if (err.code === 'auth/popup-closed-by-user') {
-        setError("Google login was cancelled.");
-      } else if (err.code === 'auth/popup-blocked') {
-        setError("Popup was blocked by browser. Please allow popups for this site.");
+      if (err.response?.status === 404) {
+        userExists = false;
       } else {
-        setError("Failed to login with Google. Please try again.");
+        throw err;
       }
-    } finally {
-      setLoading(false);
     }
-  };
+
+    // ✅ If user doesn't exist and registration is disabled, block the login
+    if (!userExists && !allowRegistration) {
+      await user.user.delete();
+      setError("New user registrations are currently disabled. Please try again later.");
+      setLoading(false);
+      return;
+    }
+
+    const userData = {
+      uid: userUid,
+      name: user?.user?.displayName || "No Name",
+      email: userEmail,
+      age: null,
+      lastLogin: new Date().toISOString(),
+    };
+
+    if (!userExists) {
+      // User not found → create new (only if registration is allowed)
+      await axiosInstance.post(`/users`, userData);
+    } else {
+      // User exists → just update lastLogin
+      await axiosInstance.patch(`/users/${userUid}/last-login`, {
+        lastLogin: new Date().toISOString(),
+      });
+    }
+
+    // Fetch and sync user data to localStorage
+    await fetchAndSyncUserData(userUid);
+
+    navigate("/");
+  } catch (err: any) {
+    console.error("Google login error:", err);
+    
+    if (err.message?.includes("registrations are currently disabled")) {
+      setError(err.message);
+    } else if (err.code === 'auth/popup-closed-by-user') {
+      setError("Google login was cancelled.");
+    } else if (err.code === 'auth/popup-blocked') {
+      setError("Popup was blocked by browser. Please allow popups for this site.");
+    } else {
+      setError("Failed to login with Google. Please try again.");
+    }
+  } finally {
+    setLoading(false);
+  }
+};
+
+// Helper function to fetch and sync user data
+const fetchAndSyncUserData = async (uid: string) => {
+  try {
+    const response = await axiosInstance.get(`/users/${uid}`);
+    const userData = response.data.data;
+    
+    // Sync to localStorage
+    localStorage.setItem('bb_user_profile', JSON.stringify(userData));
+    localStorage.setItem('bb_user_role', userData.role || 'user');
+    localStorage.setItem('bb_last_sync', new Date().toISOString());
+    
+    console.log('✅ User data synced to localStorage after login');
+  } catch (error) {
+    console.error('❌ Error syncing user data to localStorage:', error);
+  }
+};
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
