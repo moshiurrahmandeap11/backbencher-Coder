@@ -1,4 +1,4 @@
-
+// hooks/UseAuth/UseAuth.tsx - Updated
 import { useContext } from 'react';
 import { AuthContext } from '../../contexts/AuthContext/AuthContext';
 import type { AuthContextType } from '../../contexts/AuthContext/AuthContext';

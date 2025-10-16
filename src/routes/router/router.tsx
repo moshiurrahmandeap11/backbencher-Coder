@@ -1,4 +1,5 @@
-import { createBrowserRouter } from "react-router";
+// route.tsx - Updated with protected routes
+import { createBrowserRouter, Navigate } from "react-router";
 import RootLayout from "../../layouts/RootLayout/RootLayout";
 import Home from "../../pages/Home/Home";
 import AuthLayout from "../../layouts/AuthLayout/AuthLayout";
@@ -11,6 +12,11 @@ import DashboardLayout from "../../layouts/DashboardLayout/DashboardLayout";
 import BackbencherControl from "../../components/DashboardComponent/BackbencherControl/BackbencherControl";
 import About from "../../pages/About/About";
 import Contact from "../../pages/Contact/Contact";
+import ProtectedRoute from "../../components/sharedItems/ProtectedRoute/ProtectedRoute";
+import Unauthorized from "../../components/sharedItems/Unauthorized/Unauthorized";
+import MentorLearning from "../../components/Mentor/MentorLearning/MentorLearning";
+import StudentWorkstation from "../../components/Student/StudentWorkstation/StudentWorkstation";
+import UserDashboard from "../../components/DashboardComponent/UserDashboard/UserDashboard";
 
 export const route = createBrowserRouter([
     {
@@ -27,7 +33,11 @@ export const route = createBrowserRouter([
             },
             {
                 path: "/edit-profile/:firstName/:uid",
-                element: <EditProfile></EditProfile>
+                element: (
+                    <ProtectedRoute>
+                        <EditProfile />
+                    </ProtectedRoute>
+                )
             },
             {
                 path: "/about",
@@ -36,6 +46,10 @@ export const route = createBrowserRouter([
             {
                 path: "/contact",
                 element: <Contact></Contact>
+            },
+            {
+                path: "/unauthorized",
+                element: <Unauthorized />
             }
         ]
     },
@@ -59,12 +73,48 @@ export const route = createBrowserRouter([
     },
     {
         path: "/dashboard",
-        element: <DashboardLayout></DashboardLayout>,
+        element: (
+            <ProtectedRoute>
+                <DashboardLayout />
+            </ProtectedRoute>
+        ),
         children: [
             {
+                index: true,
+                element: (
+                    <ProtectedRoute requiredRole="user">
+                        <UserDashboard />
+                    </ProtectedRoute>
+                )
+            },
+            {
                 path: "bb",
-                element: <BackbencherControl></BackbencherControl>
+                element: (
+                    <ProtectedRoute requiredRole="admin">
+                        <BackbencherControl />
+                    </ProtectedRoute>
+                )
+            },
+            {
+                path: "learning",
+                element: (
+                    <ProtectedRoute requiredRole="mentor">
+                        <MentorLearning />
+                    </ProtectedRoute>
+                )
+            },
+            {
+                path: "workstation",
+                element: (
+                    <ProtectedRoute requiredRole="student">
+                        <StudentWorkstation />
+                    </ProtectedRoute>
+                )
             }
         ]
+    },
+    {
+        path: "*",
+        element: <Navigate to="/" replace />
     }
-])
+]);
